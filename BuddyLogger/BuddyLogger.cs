@@ -33,8 +33,13 @@ namespace Buddywing.Plugins
 
         #endregion
 
+#region Static Vars
+		
         private static Keys BLboundkey = Keys.F10;
 
+ 
+	#endregion        
+    
         #region Implementation of IPlugin
 
         public string Author { get { return "Rostol"; } }
@@ -107,7 +112,7 @@ namespace Buddywing.Plugins
 
         public static void Write(Color clr, string message, params object[] args)
         {
-            Logging.Write(clr, "[JoesCombat] " + message, args);
+            Logging.Write(clr, "[BuddyLogger] " + message, args);
         }
         public static void Write(Exception ex)
         {
