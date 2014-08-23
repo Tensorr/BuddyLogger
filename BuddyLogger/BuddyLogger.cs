@@ -226,14 +226,23 @@ namespace Buddywing.Plugins
             try
             {
                 Write("******* Questing");
-                BuddyTor.Me.Questing.DebugDump(true, true, true);
+                BuddyTor.Me.Questing.DebugDump(true, true, false);
                 
             }
             catch { Write("Invalid or no Questing"); };
 
+            try
+            {
+                Write("******* OBJECTS ************************************************************************************************************");
+                foreach (TorObject tx in ObjectManager.GetObjects<TorObject>())
+                {
+                    Write("**** OBJ: "+tx.Name);
+                    Write("**** Typ: " + tx.GetType().ToString());
+                    tx.DebugDump(false,true,false);
+                }; }
+            catch { }
 
-
-            Write("******* /ME ---------");
+            Write("******* /Dump ---------");
 
             /* 
             Write("****** BUFFS ------");
