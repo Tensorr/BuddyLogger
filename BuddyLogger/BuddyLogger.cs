@@ -222,6 +222,19 @@ namespace Buddywing.Plugins
             catch { };
                 
             Write("******* /ME ---------");
+
+            try
+            {
+                Write("******* Questing");
+                BuddyTor.Me.Questing.DebugDump(true, true, true);
+                
+            }
+            catch { Write("Invalid or no Questing"); };
+
+
+
+            Write("******* /ME ---------");
+
             /* 
             Write("****** BUFFS ------");
             Write(BuddyTor.Me.Buffs.ToReflectedString());
