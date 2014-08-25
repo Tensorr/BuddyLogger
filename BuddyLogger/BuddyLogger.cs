@@ -308,14 +308,14 @@ namespace BuddyLogger
                 }
                 catch (Exception ex) { Write(ex); }
             }
-            if (Vendors)
+            if (Effects)
             {
                 try
                 {
-                    Write("**** Vendors *****");
+                    Write("**** Effects *****");
                     foreach (TorVendor tx in ObjectManager.GetObjects<TorObject>().OrderBy(t => t.Distance))
                     {
-                        Write("**** Vendors: " + tx.Name);
+                        Write("**** Effects: " + tx.Name);
                         Write("**** Typ    : " + tx.GetType().ToString());
                         tx.DebugDump(false,true,false);
                     };
