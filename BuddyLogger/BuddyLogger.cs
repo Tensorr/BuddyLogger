@@ -19,6 +19,8 @@ using System.Xml.Serialization;
 
 namespace BuddyLogger
 {
+
+
     public class BuddyLogger : IPlugin
     {
         
@@ -33,9 +35,15 @@ namespace BuddyLogger
         private const bool Effects = true;
         private const bool Players = true;
         private const bool Abilities = true;
-        private const Keys BLboundkey = Keys.F10;
+       
+        private static bool _Companion = true;
+        private const Keys BLboundkey = Keys.Delete;
 
-        #endregion    
+        #endregion
+        #region Settings Switches
+
+
+        #endregion
 
         #region Implementation of IEquatable<IPlugin>
 
@@ -199,77 +207,84 @@ namespace BuddyLogger
             // TODO 1- Add boolean toggles
             // TODO 2- Link to Settings window
             Write ("***** TAKING *MEGADUMP* *****");
-            try {Write("****** CLIENT ------");
-                 BuddyTor.Client.DebugDump(false, true, false);
-                 Write("------ /CLIENT");}
-            catch {};
 
-            try
-            {
-                Write(" -- ME -- ");
-                BuddyTor.Me.DebugDump(false, true, false);
-            }
+            #region commented out OLD CODE - Rewrite
+            //try {Write("****** CLIENT ------");
+            //     BuddyTor.Client.DebugDump(false, true, false);
+            //     Write("------ /CLIENT");}
+            //catch {};
 
-            catch { };
+            //try
+            //{
+            //    Write(" -- ME -- ");
+            //    BuddyTor.Me.DebugDump(false, true, false);
+            //}
 
-            try
-            {
-            Write("****** SHIP ------");
-            BuddyTor.Ship.DebugDump(false, true, false);
-            }
+            //catch { };
 
-            catch { Write ("Only usable aboard your ship");};
-            try
-            {
-            Write("****** DE-BUFF ------");
-            BuddyTor.Me.Debuffs.DebugDump(false, true, false);
-            }
+            //try
+            //{
+            //Write("****** SHIP ------");
+            //BuddyTor.Ship.DebugDump(false, true, false);
+            //}
 
-            catch { };
+            //catch { Write ("Only usable aboard your ship");};
+            //try
+            //{
+            //Write("****** DE-BUFF ------");
+            //BuddyTor.Me.Debuffs.DebugDump(false, true, false);
+            //}
 
-            try
-            {
-            Write("****** BUFFS ------");
-            BuddyTor.Me.Buffs.DebugDump(false, true, false);
-                      }
+            //catch { };
 
-            catch { }
+            //try
+            //{
+            //Write("****** BUFFS ------");
+            //BuddyTor.Me.Buffs.DebugDump(false, true, false);
+            //          }
 
-            try
-            {
-                Write("****** CharacterOwnedVehicle ------");
-                BuddyTor.Me.CharacterOwnedVehicle.DebugDump(false, true, false);
-            }
-            catch { }
+            //catch { }
 
-            try
-            {
-                Write("****** Companion ------");
-                BuddyTor.Me.Companion.DebugDump(false, true, false);
-            }
-            catch { };
-            try
-            {
-                foreach (TorCharacter tn in BuddyTor.Me.EnemiesAttackers) tn.DebugDump(false, true, false);
-            }
-            catch { };
-                
-            Write("******* /ME ---------");
+            //try
+            //{
+            //    Write("****** CharacterOwnedVehicle ------");
+            //    BuddyTor.Me.CharacterOwnedVehicle.DebugDump(false, true, false);
+            //}
+            //catch { }
 
-            try
-            {
-                Write("******* Questing");
-                BuddyTor.Me.Questing.DebugDump(false, true, false);
-                
-            }
-            catch { Write("Invalid or no Questing"); };
+            //    Write("****** c ------");
+            //    BuddyTor.Me.Companion.DebugDump(false, true, false);
+            //if (_Companion)
+            //{
+            //    try
+            //    {
+            //        Write("**** Companion *****");
+            //        foreach (TorVendor tx in ObjectManager.GetObjects<TorObject>().OrderBy(t => t.Distance))
+            //        {
+            //            Write("**** Vendors: " + tx.Name);
+            //            Write("**** Typ    : " + tx.GetType().ToString());
+            //            tx.DebugDump(false, true, false);
+            //        }
+            //        ;
+            //    }
+            //    catch (Exception ex){Write(ex);}
+            //}
+
+            //try
+            //{
+            //    Write("******* Questing");
+            //    BuddyTor.Me.Questing.DebugDump(false, true, false);
+            //}
+            //catch { Write("Invalid or no Questing"); };
+            //Write("******* /ME ---------");
+            #endregion
 
             if (Placeables)
             {
                 try
                 {
                     Write("**** PLACEABLES *****");
-                    foreach (TorPlaceable tx in ObjectManager.GetObjects<TorObject>().OrderBy(t => t.Distance))
+                    foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(t => t.Distance))
                     {
                         Write("**** PLAC: " + tx.Name);
                         Write("**** Typ : " + tx.GetType().ToString());
@@ -284,7 +299,7 @@ namespace BuddyLogger
                 try
                 {
                     Write("**** NPC *****");
-                    foreach (TorNpc tx in ObjectManager.GetObjects<TorObject>().OrderBy(t => t.Distance))
+                    foreach (TorNpc tx in ObjectManager.GetObjects<TorNpc>().OrderBy(t => t.Distance))
                     {
                         Write("**** NPC: " + tx.Name);
                         Write("**** Typ: " + tx.GetType().ToString());
@@ -299,7 +314,7 @@ namespace BuddyLogger
                 try
                 {
                     Write("**** Vendors *****");
-                    foreach (TorVendor tx in ObjectManager.GetObjects<TorObject>().OrderBy(t => t.Distance))
+                    foreach (TorVendor tx in ObjectManager.GetObjects<TorVendor>().OrderBy(t => t.Distance))
                     {
                         Write("**** Vendors: " + tx.Name);
                         Write("**** Typ    : " + tx.GetType().ToString());
@@ -313,7 +328,7 @@ namespace BuddyLogger
                 try
                 {
                     Write("**** Effects *****");
-                    foreach (TorVendor tx in ObjectManager.GetObjects<TorObject>().OrderBy(t => t.Distance))
+                    foreach (TorEffect tx in ObjectManager.GetObjects<TorEffect>().OrderBy(t => t.Distance))
                     {
                         Write("**** Effects: " + tx.Name);
                         Write("**** Typ    : " + tx.GetType().ToString());
