@@ -284,7 +284,7 @@ namespace BuddyLogger
                 try
                 {
                     Write("**** PLACEABLES *****");
-                    foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(t => t.Distance))
+                    foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance))
                     {
                         Write("**** PLAC: " + tx.Name);
                         Write("**** Typ : " + tx.GetType().ToString());
