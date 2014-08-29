@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Windows.Forms.VisualStyles;
 using Buddy.Common;
 using Buddy.Common.Plugins;
@@ -16,6 +17,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
 using System.Xml.Serialization;
+using Buddywing;
 
 namespace BuddyLogger
 {
@@ -27,6 +29,7 @@ namespace BuddyLogger
 
         #region Settings
 
+        private const bool MegaDump = true; 
         
         private const bool Placeables = true;
         private const bool Vendors = true;
@@ -38,6 +41,7 @@ namespace BuddyLogger
        
         private static bool _Companion = true;
         private const Keys BLboundkey = Keys.Delete;
+
 
         #endregion
         #region Settings Switches
@@ -113,11 +117,34 @@ namespace BuddyLogger
         public void OnEnabled()
         {
             //Hotkeys.RegisterHotkey("MEGADump", () => { BuddyLogger.DumpObjects(); }, Keys.F10);
+
+            var thread = new Thread(new ThreadStart(DisplayFormThread));
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
+        }
+
+        private void DisplayFormThread()
+        {
+            try
+            {
+                DeveloperWindow objMain = new DeveloperWindow();
+                objMain.Show();
+                objMain.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
+
+                System.Windows.Threading.Dispatcher.Run();
+            }
+            catch (Exception ex)
+            {
+                Write(ex);
+            }
         }
 
         /// <summary> Executes the disabled action. This is called whent he user has disabled this specific plugin via the GUI. </summary>
         public void OnDisabled()
         {
+     
 
         }
 
@@ -285,10 +312,12 @@ namespace BuddyLogger
                 {
                     Write("**** PLACEABLES *****");
                     foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance))
-                    {
-                        Write("**** PLAC: " + tx.Name);
-                        Write("**** Typ : " + tx.GetType().ToString());
-                        tx.DebugDump(false,true,false);
+                    {                                                       
+                        Write("**** PLAC : " + tx.Name);
+                        Write("**** Typ  : " + tx.GetType().ToString());
+                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Dist : " + tx.Distance);
+                        if(MegaDump) tx.DebugDump(false,true,false);
                     };
                 }
                 catch (Exception ex) { Write(ex); }
@@ -302,8 +331,10 @@ namespace BuddyLogger
                     foreach (TorNpc tx in ObjectManager.GetObjects<TorNpc>().OrderBy(t => t.Distance))
                     {
                         Write("**** NPC: " + tx.Name);
-                        Write("**** Typ: " + tx.GetType().ToString());
-                        tx.DebugDump(false,true,false);                         
+                        Write("**** Typ  : " + tx.GetType().ToString());
+                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Dist : " + tx.Distance);
+                        if (MegaDump) tx.DebugDump(false, true, false); tx.DebugDump(false, true, false);                         
                     };
                 }
                 catch (Exception ex) { Write(ex); }
@@ -317,8 +348,10 @@ namespace BuddyLogger
                     foreach (TorVendor tx in ObjectManager.GetObjects<TorVendor>().OrderBy(t => t.Distance))
                     {
                         Write("**** Vendors: " + tx.Name);
-                        Write("**** Typ    : " + tx.GetType().ToString());
-                        tx.DebugDump(false,true,false);
+                        Write("**** Typ  : " + tx.GetType().ToString());
+                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Dist : " + tx.Distance);
+                        if (MegaDump) tx.DebugDump(false, true, false); tx.DebugDump(false, true, false);
                     };
                 }
                 catch (Exception ex) { Write(ex); }
@@ -331,8 +364,10 @@ namespace BuddyLogger
                     foreach (TorEffect tx in ObjectManager.GetObjects<TorEffect>().OrderBy(t => t.Distance))
                     {
                         Write("**** Effects: " + tx.Name);
-                        Write("**** Typ    : " + tx.GetType().ToString());
-                        tx.DebugDump(false,true,false);
+                        Write("**** Typ  : " + tx.GetType().ToString());
+                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Dist : " + tx.Distance);
+                        if (MegaDump) tx.DebugDump(false, true, false); tx.DebugDump(false, true, false);
                     };
                 }
                 catch (Exception ex) { Write(ex); }
