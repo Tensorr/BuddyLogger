@@ -29,22 +29,28 @@ namespace BuddyLogger
 
         #region Settings
 
-        private static bool _megaDump = true;
-        private static bool _MDParents = true;
-        private static bool _MDFields = true;
-        private static bool _MDMethods = true;
+        private static bool _megaDump = Properties.Settings.Default.MD;
+        private static bool _MDParents = Properties.Settings.Default.Parents;
+        private static bool _MDFields = Properties.Settings.Default.Fields;
+        private static bool _MDMethods = Properties.Settings.Default.Methods;
 
-        
-        private const bool Placeables = true;
-        private const bool Vendors = true;
-        private const bool Npcs = true;
-        private const bool Equipment = true;
-        private const bool Effects = true;
-        private const bool Players = true;
-        private const bool Abilities = true;
+
+        private static bool _vendors = Properties.Settings.Default.Vendors;
+        private static bool _npcs = Properties.Settings.Default.Npc;
+        private static bool _equipment = Properties.Settings.Default.Equipment;
+        private static bool _effects = Properties.Settings.Default.Effects;
+        private static bool _players = Properties.Settings.Default.Players;
+        private static bool _abilities = Properties.Settings.Default.Abilites;
        
         private static bool _Companion = true;
+        private static bool _placeables;
         private frmSettings _newtempui;
+
+        static BuddyLogger()
+        {
+            Placeables = Properties.Settings.Default.Placeables;
+        }
+
         private const Keys BLboundkey = Keys.Delete;
 
 
@@ -110,6 +116,48 @@ namespace BuddyLogger
             set { _MDMethods = value; }
         }
 
+        public static bool Placeables
+        {
+            get { return _placeables; }
+            set { _placeables = value; }
+        }
+
+        public static bool Vendors
+        {
+            get { return _vendors; }
+            set { _vendors = value; }
+        }
+
+        public static bool Npcs
+        {
+            get { return _npcs; }
+            set { _npcs = value; }
+        }
+
+        public static bool Equipment
+        {
+            get { return _equipment; }
+            set { _equipment = value; }
+        }
+
+        public static bool Effects
+        {
+            get { return _effects; }
+            set { _effects = value; }
+        }
+
+        public static bool Players
+        {
+            get { return _players; }
+            set { _players = value; }
+        }
+
+        public static bool Abilities
+        {
+            get { return _abilities; }
+            set { _abilities = value; }
+        }
+
         /// <summary> Executes the pulse action. This is called every "tick" of the bot. </summary>
         public void OnPulse()
         {
@@ -149,7 +197,7 @@ namespace BuddyLogger
             LoadUI();
 
         }
-
+                                                    
 
         public void LoadUI()
         {
@@ -348,90 +396,96 @@ namespace BuddyLogger
             //Write("******* /ME ---------");
             #endregion
 
+            Write("MEgadump:" + MegaDump.ToString() + "  _md: " + _megaDump.ToString() + " Sett :" + Properties.Settings.Default.MD.ToString());
+
+            Write("Palceables:" + Placeables.ToString() + "  _pl: " + Placeables.ToString() + " Sett :" + Properties.Settings.Default.Placeables.ToString());
+            Write("NPC:" + Npcs.ToString() + "  _np: " + _npcs.ToString() + " Sett :" + Properties.Settings.Default.Npc.ToString());
+
             if (Placeables)
             {
                 try
                 {
-                    Write("**** PLACEABLES *****");
-                    foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance))
-                    {                                                       
-                        Write("**** PLAC : " + tx.Name);
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
-                        Write("**** Dist : " + tx.Distance);
-                        if(_megaDump) tx.DebugDump(MDParents,MDFields,MDMethods);
-                    };
+                    Write("**** PLACEABLES **************************************************");
+                    Write("Palceables:"+Placeables.ToString()+"  _pl: "+Placeables.ToString()+ " Sett :"+Properties.Settings.Default.Placeables.ToString()) ;
+                    //foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance))
+                    //{
+                    //    Write("**** PLAC : " + tx.Name + "----------------------------------------");
+                    //    Write("**** Typ  : " + tx.GetType().ToString());
+                    //    Write("**** Pos  : " + tx.Position.ToString());
+                    //    Write("**** Dist : " + tx.Distance);
+                    //    if(_megaDump) tx.DebugDump(MDParents,MDFields,MDMethods);
+                    //};
                 }
                 catch (Exception ex) { Write(ex); }
             }
 
-            if (Npcs)
-            {
-                try
-                {
-                    Write("**** NPC *****");
-                    foreach (TorNpc tx in ObjectManager.GetObjects<TorNpc>().OrderBy(t => t.Distance))
-                    {
-                        Write("**** NPC: " + tx.Name);
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
-                        Write("**** Dist : " + tx.Distance);
-                        if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);                   
-                    };
-                }
-                catch (Exception ex) { Write(ex); }
-            }
+            //if (Npcs)
+            //{
+            //    try
+            //    {
+            //        Write("**** NPC *****");
+            //        foreach (TorNpc tx in ObjectManager.GetObjects<TorNpc>().OrderBy(t => t.Distance))
+            //        {
+            //            Write("**** NPC: " + tx.Name + "----------------------------------------");
+            //            Write("**** Typ  : " + tx.GetType().ToString());
+            //            Write("**** Pos  : " + tx.Position.ToString());
+            //            Write("**** Dist : " + tx.Distance);
+            //            if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);                   
+            //        };
+            //    }
+            //    catch (Exception ex) { Write(ex); }
+            //}
             
-            if (Vendors)
-            {
-                try
-                {
-                    Write("**** Vendors *****");
-                    foreach (TorVendor tx in ObjectManager.GetObjects<TorVendor>().OrderBy(t => t.Distance))
-                    {
-                        Write("**** Vendors: " + tx.Name);
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
-                        Write("**** Dist : " + tx.Distance);
-                        if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
-                    };
-                }
-                catch (Exception ex) { Write(ex); }
-            }
-            if (Effects)
-            {
-                try
-                {
-                    Write("**** Effects *****");
-                    foreach (TorEffect tx in ObjectManager.GetObjects<TorEffect>().OrderBy(t => t.Distance))
-                    {
-                        Write("**** Effects: " + tx.Name);
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
-                        Write("**** Dist : " + tx.Distance);
-                        if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
-                    };
-                }
-                catch (Exception ex) { Write(ex); }
-            }
+            //if (Vendors)
+            //{
+            //    try
+            //    {
+            //        Write("**** Vendors *****");
+            //        foreach (TorVendor tx in ObjectManager.GetObjects<TorVendor>().OrderBy(t => t.Distance))
+            //        {
+            //            Write("**** Vendors: " + tx.Name + "----------------------------------------");
+            //            Write("**** Typ  : " + tx.GetType().ToString());
+            //            Write("**** Pos  : " + tx.Position.ToString());
+            //            Write("**** Dist : " + tx.Distance);
+            //            if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
+            //        };
+            //    }
+            //    catch (Exception ex) { Write(ex); }
+            //}
+            //if (Effects)
+            //{
+            //    try
+            //    {
+            //        Write("**** Effects *****");
+            //        foreach (TorEffect tx in ObjectManager.GetObjects<TorEffect>().OrderBy(t => t.Distance))
+            //        {
+            //            Write("**** Effects: " + tx.Name + "----------------------------------------");
+            //            Write("**** Typ  : " + tx.GetType().ToString());
+            //            Write("**** Pos  : " + tx.Position.ToString());
+            //            Write("**** Dist : " + tx.Distance);
+            //            if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
+            //        };
+            //    }
+            //    catch (Exception ex) { Write(ex); }
+            //}
 
-            if (Equipment)
-            {
-               try
-                {
-                    Write(
-                        "******* EQUIPMENT ************************************************************************************************************");
-                        foreach (TorItem ti in BuddyTor.Me.InventoryEquipment)
-                        {
-                            Write("**** OBJ: " + ti.Name);
-                            Write("**** Typ: " + ti.GetType().ToString());
-                            ti.DebugDump(false,true,false);
-                        }; 
-                    Write("******* Bank  **   ");
-                    BuddyTor.Me.InventoryBank.DebugDump(false, true, false);
-                }
-                catch (Exception ex) { Write(ex); }
-            }
+            //if (Equipment)
+            //{
+            //   try
+            //    {
+            //        Write(
+            //            "******* EQUIPMENT ************************************************************************************************************");
+            //            foreach (TorItem ti in BuddyTor.Me.InventoryEquipment)
+            //            {
+            //                Write("**** OBJ: " + ti.Name + "----------------------------------------");                                            
+            //                Write("**** Typ: " + ti.GetType().ToString());
+            //                ti.DebugDump(false,true,false);
+            //            }; 
+            //        Write("******* Bank  **   ");
+            //        BuddyTor.Me.InventoryBank.DebugDump(false, true, false);
+            //    }
+            //    catch (Exception ex) { Write(ex); }
+            //}
 
             Write("******* /Dump ---------");
 

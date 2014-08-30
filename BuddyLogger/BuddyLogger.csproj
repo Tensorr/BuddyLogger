@@ -91,6 +91,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorNpc.datasource" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorObject.datasource" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorPlaceable.datasource" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorVendor.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

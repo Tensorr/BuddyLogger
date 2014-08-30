@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Buddy.CommonBot.Settings;
+using Buddy.Swtor;
+using Buddy.Swtor.Objects;
 
 namespace BuddyLogger
 {
@@ -19,7 +21,6 @@ namespace BuddyLogger
 
         private void frmSettings_Load(object sender, EventArgs e)
         {
-            cbMegaDump.Checked = BuddyLogger.MegaDump;
         }
 
         private void bindingNavigatorMoveNextItem_Click(object sender, EventArgs e)
@@ -35,7 +36,16 @@ namespace BuddyLogger
         private void cbMegaDump_CheckedChanged(object sender, EventArgs e)
         {
             BuddyLogger.MegaDump = cbMegaDump.Checked;
-            //Properties.Settings.MD = cbMegaDump.Checked;
+        }
+
+        private void cbPalceables_CheckedChanged(object sender, EventArgs e)
+        {
+            BuddyLogger.Placeables = cbPalceables.Checked;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            torPlaceableBindingSource.DataSource = ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance);
         }
     }
 }
