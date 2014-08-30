@@ -29,7 +29,11 @@ namespace BuddyLogger
 
         #region Settings
 
-        private const bool MegaDump = true; 
+        private static bool _megaDump = true;
+        private static bool _MDParents = true;
+        private static bool _MDFields = true;
+        private static bool _MDMethods = true;
+
         
         private const bool Placeables = true;
         private const bool Vendors = true;
@@ -40,6 +44,7 @@ namespace BuddyLogger
         private const bool Abilities = true;
        
         private static bool _Companion = true;
+        private frmSettings _newtempui;
         private const Keys BLboundkey = Keys.Delete;
 
 
@@ -81,6 +86,30 @@ namespace BuddyLogger
 
         private DateTime LastChecked { get; set; }
 
+        public static bool MegaDump
+        {
+            get { return _megaDump; }
+            set { _megaDump = value; }
+        }
+
+        public static bool MDParents
+        {
+            get { return _MDParents; }
+            set { _MDParents = value; }
+        }
+
+        public static bool MDFields
+        {
+            get { return _MDFields; }
+            set { _MDFields = value; }
+        }
+
+        public static bool MDMethods
+        {
+            get { return _MDMethods; }
+            set { _MDMethods = value; }
+        }
+
         /// <summary> Executes the pulse action. This is called every "tick" of the bot. </summary>
         public void OnPulse()
         {
@@ -117,19 +146,33 @@ namespace BuddyLogger
         public void OnEnabled()
         {
             //Hotkeys.RegisterHotkey("MEGADump", () => { BuddyLogger.DumpObjects(); }, Keys.F10);
+            LoadUI();
 
+        }
+
+
+        public void LoadUI()
+        {
+            if (_newtempui == null || _newtempui.IsDisposed || _newtempui.Disposing) _newtempui = new frmSettings();
+            if (_newtempui != null || _newtempui.IsDisposed) _newtempui.ShowDialog();
+        }
+        
+        public void DisplayDevWindow()
+        {
             var thread = new Thread(new ThreadStart(DisplayFormThread));
 
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join();
+
         }
 
+        
         private void DisplayFormThread()
         {
             try
             {
-                DeveloperWindow objMain = new DeveloperWindow();
+                frmSettings objMain = new frmSettings();
                 objMain.Show();
                 objMain.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
 
@@ -144,7 +187,7 @@ namespace BuddyLogger
         /// <summary> Executes the disabled action. This is called whent he user has disabled this specific plugin via the GUI. </summary>
         public void OnDisabled()
         {
-     
+            if (_newtempui != null || _newtempui.IsDisposed) _newtempui.Hide();
 
         }
 
@@ -228,7 +271,6 @@ namespace BuddyLogger
         //}
 
         /// <summary> Dumps everything </summary>
-        
         public static void DumpObjects()
         {
             // TODO 1- Add boolean toggles
@@ -317,7 +359,7 @@ namespace BuddyLogger
                         Write("**** Typ  : " + tx.GetType().ToString());
                         Write("**** Pos  : " + tx.Position.ToString());
                         Write("**** Dist : " + tx.Distance);
-                        if(MegaDump) tx.DebugDump(false,true,false);
+                        if(_megaDump) tx.DebugDump(MDParents,MDFields,MDMethods);
                     };
                 }
                 catch (Exception ex) { Write(ex); }
@@ -334,7 +376,7 @@ namespace BuddyLogger
                         Write("**** Typ  : " + tx.GetType().ToString());
                         Write("**** Pos  : " + tx.Position.ToString());
                         Write("**** Dist : " + tx.Distance);
-                        if (MegaDump) tx.DebugDump(false, true, false); tx.DebugDump(false, true, false);                         
+                        if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);                   
                     };
                 }
                 catch (Exception ex) { Write(ex); }
@@ -351,7 +393,7 @@ namespace BuddyLogger
                         Write("**** Typ  : " + tx.GetType().ToString());
                         Write("**** Pos  : " + tx.Position.ToString());
                         Write("**** Dist : " + tx.Distance);
-                        if (MegaDump) tx.DebugDump(false, true, false); tx.DebugDump(false, true, false);
+                        if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
                     };
                 }
                 catch (Exception ex) { Write(ex); }
@@ -367,7 +409,7 @@ namespace BuddyLogger
                         Write("**** Typ  : " + tx.GetType().ToString());
                         Write("**** Pos  : " + tx.Position.ToString());
                         Write("**** Dist : " + tx.Distance);
-                        if (MegaDump) tx.DebugDump(false, true, false); tx.DebugDump(false, true, false);
+                        if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
                     };
                 }
                 catch (Exception ex) { Write(ex); }
@@ -416,7 +458,6 @@ namespace BuddyLogger
               
              */
         }
-
 
     }
 }
