@@ -28,11 +28,6 @@ namespace BuddyLogger
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            BuddyLogger.DumpObjects();
-        }
-
         private void cbMegaDump_CheckedChanged(object sender, EventArgs e)
         {
             BuddyLogger.MegaDump = cbMegaDump.Checked;
@@ -43,9 +38,24 @@ namespace BuddyLogger
             BuddyLogger.Placeables = cbPalceables.Checked;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnPlaceables_Click(object sender, EventArgs e)
         {
-            torPlaceableBindingSource.DataSource = ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance);
+            torPlaceableBindingSource.DataSource = ObjectManager.GetObjects<TorPlaceable>().OrderBy(t => t.Distance);
+        }
+
+        private void btnNPC_Click(object sender, EventArgs e)
+        {
+            torNpcBindingSource.DataSource = ObjectManager.GetObjects<TorNpc>().OrderBy(t => t.Distance);
+        }
+
+        private void dataGridView2_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            //BuddyLogger.Write("Err");
+        }
+
+        private void btnDump_Click(object sender, EventArgs e)
+        {
+            BuddyLogger.DumpObjects();
         }
     }
 }

@@ -424,7 +424,7 @@ namespace BuddyLogger
             //    try
             //    {
             //        Write("**** NPC *****");
-            //        foreach (TorNpc tx in ObjectManager.GetObjects<TorNpc>().OrderBy(t => t.Distance))
+            //        foreach (TorNpc tx in ObjectManager.GetObjects<TorNpc>().OrderBy(tx => tx.Distance))
             //        {
             //            Write("**** NPC: " + tx.Name + "----------------------------------------");
             //            Write("**** Typ  : " + tx.GetType().ToString());
@@ -441,7 +441,7 @@ namespace BuddyLogger
             //    try
             //    {
             //        Write("**** Vendors *****");
-            //        foreach (TorVendor tx in ObjectManager.GetObjects<TorVendor>().OrderBy(t => t.Distance))
+            //        foreach (TorVendor tx in ObjectManager.GetObjects<TorVendor>().OrderBy(tx => tx.Distance))
             //        {
             //            Write("**** Vendors: " + tx.Name + "----------------------------------------");
             //            Write("**** Typ  : " + tx.GetType().ToString());
@@ -457,7 +457,7 @@ namespace BuddyLogger
             //    try
             //    {
             //        Write("**** Effects *****");
-            //        foreach (TorEffect tx in ObjectManager.GetObjects<TorEffect>().OrderBy(t => t.Distance))
+            //        foreach (TorEffect tx in ObjectManager.GetObjects<TorEffect>().OrderBy(tx => tx.Distance))
             //        {
             //            Write("**** Effects: " + tx.Name + "----------------------------------------");
             //            Write("**** Typ  : " + tx.GetType().ToString());
@@ -490,7 +490,7 @@ namespace BuddyLogger
             Write("******* /Dump ---------");
 
             /* 
-             * var theList = ObjectManager.GetObjects<TorObject>().OrderBy(t => t.Distance)
+             * var theList = ObjectManager.GetObjects<TorObject>().OrderBy(tx => tx.Distance)
              * 
              * 
             Write("****** BUFFS ------");
