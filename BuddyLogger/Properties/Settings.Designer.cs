@@ -178,5 +178,17 @@ namespace BuddyLogger.Properties {
                 this["Effects"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FullRun {
+            get {
+                return ((bool)(this["FullRun"]));
+            }
+            set {
+                this["FullRun"] = value;
+            }
+        }
     }
 }

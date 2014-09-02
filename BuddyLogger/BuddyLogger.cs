@@ -3,8 +3,10 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Windows.Forms.VisualStyles;
 using Buddy.Common;
+using Buddy.Common.Math;
 using Buddy.Common.Plugins;
 using Buddy.CommonBot.Profile;
+using Buddy.Navigation;
 using Buddy.Swtor;
 using Buddy.Swtor.Objects;
 using System;
@@ -51,7 +53,7 @@ namespace BuddyLogger
             Placeables = Properties.Settings.Default.Placeables;
         }
 
-        private const Keys BLboundkey = Keys.Delete;
+        private const Keys BLboundkey = Keys.F10;
 
 
         #endregion
@@ -75,9 +77,7 @@ namespace BuddyLogger
         }
 
         #endregion
-
-    
-    
+     
         #region Implementation of IPlugin
 
         public string Author { get { return "Rostol"; } }
@@ -181,7 +181,7 @@ namespace BuddyLogger
         /// <summary> Executes the initialize action. This is called at initial bot startup. (When the bot itself is started, not when Start() is called) </summary>
         public void OnInitialize()
         {
-            Hotkeys.RegisterHotkey("MEGADumpPlugin", () => { BuddyLogger.DumpObjects(); }, BLboundkey);
+            Hotkeys.RegisterHotkey("MEGADumpPlugin", () => { BuddyLogger.DisplayDevWindow(); }, BLboundkey);
             Write("Dumper Enabled");
         }
 
@@ -202,10 +202,10 @@ namespace BuddyLogger
         public void LoadUI()
         {
             if (_newtempui == null || _newtempui.IsDisposed || _newtempui.Disposing) _newtempui = new frmSettings();
-            if (_newtempui != null || _newtempui.IsDisposed) _newtempui.ShowDialog();
+            //if (_newtempui != null || _newtempui.IsDisposed) _newtempui.ShowDialog();    //RST: cant make it work without showing it as modal... blagh
         }
         
-        public void DisplayDevWindow()
+        public static void DisplayDevWindow()
         {
             var thread = new Thread(new ThreadStart(DisplayFormThread));
 
@@ -215,12 +215,15 @@ namespace BuddyLogger
 
         }
 
-        
-        private void DisplayFormThread()
+
+        /// <summary> Displays the BL window.
+        ///       Closes the thread when all windows (main annd child if any?) are exited      
+        ///  </summary>
+        private static void DisplayFormThread()
         {
             try
             {
-                frmSettings objMain = new frmSettings();
+                var objMain = new frmSettings();
                 objMain.Show();
                 objMain.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
 
@@ -241,6 +244,8 @@ namespace BuddyLogger
 
         #endregion
 
+        #region Basic Write to log functions
+        /// <summary> Writes string to Output log and logfile. </summary>
         public static void Write(string message)
         {
             Write(Colors.Green, message);
@@ -256,19 +261,19 @@ namespace BuddyLogger
         {
             Logging.Write(clr, "[BuddyLogger] " + message, args);
         }
-        /// <summary> Writes an Exception to the log. </summary>
+        /// <summary> Writes an Exception to the log and logfile. </summary>
         public static void Write(Exception ex)
         {
             Write("!!##!!!!##!! EXCEPTION: ----------------------------------------------");
             Write("!!##  Message = {0}", ex.Message);
-	        Write("!!##  Source = {0}", ex.Source);
-	        Write("!!##  StackTrace = {0}", ex.StackTrace);
-	        Write("!!##  TargetSite = {0}", ex.TargetSite);
+            Write("!!##  Source = {0}", ex.Source);
+            Write("!!##  StackTrace = {0}", ex.StackTrace);
+            Write("!!##  TargetSite = {0}", ex.TargetSite);
             Write("!!##  HelpLink = {0}", ex.HelpLink);
             // Display the exception's data dictionary.
             //usage ex.data["Time"]=DateTime.Now; ex.data["Pizza"]="Yup";
-	        foreach (DictionaryEntry pair in ex.Data)
-	        {
+            foreach (DictionaryEntry pair in ex.Data)
+            {
                 Write("!!## EX: {0} = {1}", pair.Key, pair.Value);
             }
             Write("!!##!!!!##!! /EXCEPTION -----------------------------------------------");
@@ -318,12 +323,14 @@ namespace BuddyLogger
         //    }
         //}
 
+        #endregion
         /// <summary> Dumps everything </summary>
         public static void DumpObjects()
         {
             // TODO 1- Add boolean toggles
             // TODO 2- Link to Settings window
             Write ("***** TAKING *MEGADUMP* *****");
+            _megaDump = Properties.Settings.Default.MD;   //RST: this was acting up
 
             #region commented out OLD CODE - Rewrite
             //try {Write("****** CLIENT ------");
@@ -397,7 +404,6 @@ namespace BuddyLogger
             #endregion
 
             Write("MEgadump:" + MegaDump.ToString() + "  _md: " + _megaDump.ToString() + " Sett :" + Properties.Settings.Default.MD.ToString());
-
             Write("Palceables:" + Placeables.ToString() + "  _pl: " + Placeables.ToString() + " Sett :" + Properties.Settings.Default.Placeables.ToString());
             Write("NPC:" + Npcs.ToString() + "  _np: " + _npcs.ToString() + " Sett :" + Properties.Settings.Default.Npc.ToString());
 
@@ -406,7 +412,6 @@ namespace BuddyLogger
                 try
                 {
                     Write("**** PLACEABLES **************************************************");
-                    Write("Palceables:"+Placeables.ToString()+"  _pl: "+Placeables.ToString()+ " Sett :"+Properties.Settings.Default.Placeables.ToString()) ;
                     foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance))
                     {
                         Write("**** PLAC : " + tx.Name + "----------------------------------------");
@@ -513,5 +518,32 @@ namespace BuddyLogger
              */
         }
 
+        public static void MoveTo(Vector3 destVector3)
+        {
+            var a = 3;  // tries
+            try
+            {
+                var result = Navigator.MoveTo(destVector3);
+
+                Write("Nav: " + result.ToString());
+                while (result != MoveResult.Failed && result == MoveResult.PathGenerating && a > 0)
+                {
+                    Thread.Sleep(250);
+                    result = Navigator.MoveTo(destVector3);
+                    a--;
+                }
+                if (a<=0) return;      // overflow
+                while (result != MoveResult.Failed && result != MoveResult.ReachedDestination &&
+                       Properties.Settings.Default.FullRun && !BuddyTor.Me.InCombat && a>0)
+                {
+                    result = Navigator.MoveTo(destVector3);
+                    Write("Nav: " + result.ToString());
+                    if (result == MoveResult.Moved) a = 3;
+                    Thread.Sleep(50);
+                    a++;
+                }
+            }
+            catch (Exception e) { Write(e);}
+        }
     }
 }

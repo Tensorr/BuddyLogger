@@ -76,6 +76,7 @@
     <Compile Include="frmSettings.Designer.cs">
       <DependentUpon>frmSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -91,11 +92,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorAbility.datasource" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorCharacter.datasource" />
     <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorEffect.datasource" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorItem.datasource" />
     <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorNpc.datasource" />
     <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorObject.datasource" />
     <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorPlaceable.datasource" />
     <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorPlayer.datasource" />
+    <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorVehicle.datasource" />
     <None Include="Properties\DataSources\Buddy.Swtor.Objects.TorVendor.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
