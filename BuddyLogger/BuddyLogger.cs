@@ -32,9 +32,9 @@ namespace BuddyLogger
         #region Settings
 
         private static bool _megaDump = Properties.Settings.Default.MD;
-        private static bool _MDParents = Properties.Settings.Default.Parents;
-        private static bool _MDFields = Properties.Settings.Default.Fields;
-        private static bool _MDMethods = Properties.Settings.Default.Methods;
+        private static bool _mdParents = Properties.Settings.Default.Parents;
+        private static bool _mdFields = Properties.Settings.Default.Fields;
+        private static bool _mdMethods = Properties.Settings.Default.Methods;
 
 
         private static bool _vendors = Properties.Settings.Default.Vendors;
@@ -43,8 +43,7 @@ namespace BuddyLogger
         private static bool _effects = Properties.Settings.Default.Effects;
         private static bool _players = Properties.Settings.Default.Players;
         private static bool _abilities = Properties.Settings.Default.Abilites;
-       
-        private static bool _Companion = true;
+
         private static bool _placeables;
         private frmSettings _newtempui;
 
@@ -82,7 +81,7 @@ namespace BuddyLogger
 
         public string Author { get { return "Rostol"; } }
 
-        public Version Version { get { return new Version(0, 1); } }
+        public Version Version { get { return new Version(0, 3); } }
 
         public string Name { get { return "BuddyLogger"; } }
 
@@ -100,20 +99,20 @@ namespace BuddyLogger
 
         public static bool MDParents
         {
-            get { return _MDParents; }
-            set { _MDParents = value; }
+            get { return _mdParents; }
+            set { _mdParents = value; }
         }
 
         public static bool MDFields
         {
-            get { return _MDFields; }
-            set { _MDFields = value; }
+            get { return _mdFields; }
+            set { _mdFields = value; }
         }
 
         public static bool MDMethods
         {
-            get { return _MDMethods; }
-            set { _MDMethods = value; }
+            get { return _mdMethods; }
+            set { _mdMethods = value; }
         }
 
         public static bool Placeables
@@ -207,7 +206,7 @@ namespace BuddyLogger
         
         public static void DisplayDevWindow()
         {
-            var thread = new Thread(new ThreadStart(DisplayFormThread));
+            var thread = new Thread(DisplayFormThread);
 
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
@@ -238,7 +237,7 @@ namespace BuddyLogger
         /// <summary> Executes the disabled action. This is called whent he user has disabled this specific plugin via the GUI. </summary>
         public void OnDisabled()
         {
-            if (_newtempui != null || _newtempui.IsDisposed) _newtempui.Hide();
+            if (_newtempui != null && (_newtempui != null || _newtempui.IsDisposed)) _newtempui.Hide();
 
         }
 
@@ -278,16 +277,16 @@ namespace BuddyLogger
             }
             Write("!!##!!!!##!! /EXCEPTION -----------------------------------------------");
         }
-        public static void WriteObject(TorObject O)
+        public static void WriteObject(TorObject o)
         {
-            if (O == null) return;
+            if (o == null) return;
             try
             {
                 XmlSerializer xmlserializer = new XmlSerializer(typeof(TorObject));
                 StringWriter stringWriter = new StringWriter();
                 XmlWriter writer = XmlWriter.Create(stringWriter);
 
-                xmlserializer.Serialize(writer, O);
+                xmlserializer.Serialize(writer, o);
 
                 Write(stringWriter.ToString());
 
@@ -403,9 +402,9 @@ namespace BuddyLogger
             //Write("******* /ME ---------");
             #endregion
 
-            Write("MEgadump:" + MegaDump.ToString() + "  _md: " + _megaDump.ToString() + " Sett :" + Properties.Settings.Default.MD.ToString());
-            Write("Palceables:" + Placeables.ToString() + "  _pl: " + Placeables.ToString() + " Sett :" + Properties.Settings.Default.Placeables.ToString());
-            Write("NPC:" + Npcs.ToString() + "  _np: " + _npcs.ToString() + " Sett :" + Properties.Settings.Default.Npc.ToString());
+            Write("MEgadump:" + MegaDump + "  _md: " + _megaDump + " Sett :" + Properties.Settings.Default.MD);
+            Write("Palceables:" + Placeables + "  _pl: " + Placeables + " Sett :" + Properties.Settings.Default.Placeables);
+            Write("NPC:" + Npcs + "  _np: " + _npcs + " Sett :" + Properties.Settings.Default.Npc);
 
             if (Placeables)
             {
@@ -415,8 +414,8 @@ namespace BuddyLogger
                     foreach (TorPlaceable tx in ObjectManager.GetObjects<TorPlaceable>().OrderBy(tx => tx.Distance))
                     {
                         Write("**** PLAC : " + tx.Name + "----------------------------------------");
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Typ  : " + tx.GetType());
+                        Write("**** Pos  : " + tx.Position);
                         Write("**** Dist : " + tx.Distance);
                         if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
                     };
@@ -432,8 +431,8 @@ namespace BuddyLogger
                     foreach (TorNpc tx in ObjectManager.GetObjects<TorNpc>().OrderBy(tx => tx.Distance))
                     {
                         Write("**** NPC: " + tx.Name + "----------------------------------------");
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Typ  : " + tx.GetType());
+                        Write("**** Pos  : " + tx.Position);
                         Write("**** Dist : " + tx.Distance);
                         if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
                     };
@@ -449,8 +448,8 @@ namespace BuddyLogger
                     foreach (TorVendor tx in ObjectManager.GetObjects<TorVendor>().OrderBy(tx => tx.Distance))
                     {
                         Write("**** Vendors: " + tx.Name + "----------------------------------------");
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Typ  : " + tx.GetType());
+                        Write("**** Pos  : " + tx.Position);
                         Write("**** Dist : " + tx.Distance);
                         if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
                     };
@@ -465,8 +464,8 @@ namespace BuddyLogger
                     foreach (TorEffect tx in ObjectManager.GetObjects<TorEffect>().OrderBy(tx => tx.Distance))
                     {
                         Write("**** Effects: " + tx.Name + "----------------------------------------");
-                        Write("**** Typ  : " + tx.GetType().ToString());
-                        Write("**** Pos  : " + tx.Position.ToString());
+                        Write("**** Typ  : " + tx.GetType());
+                        Write("**** Pos  : " + tx.Position);
                         Write("**** Dist : " + tx.Distance);
                         if (_megaDump) tx.DebugDump(MDParents, MDFields, MDMethods);
                     };
@@ -483,16 +482,17 @@ namespace BuddyLogger
                     foreach (TorItem ti in BuddyTor.Me.InventoryEquipment)
                     {
                         Write("**** OBJ: " + ti.Name + "----------------------------------------");
-                        Write("**** Typ: " + ti.GetType().ToString());
+                        Write("**** Typ: " + ti.GetType());
                         ti.DebugDump(false, true, false);
                     };
                     Write("******* Bank  **   ");
                     BuddyTor.Me.InventoryBank.DebugDump(false, true, false);
                 }
                 catch (Exception ex) { Write(ex); }
-            }
+                }
 
-            Write("******* /Dump ---------");
+
+            Write("******* /Dump ---------");      
 
             /* 
              * var theList = ObjectManager.GetObjects<TorObject>().OrderBy(tx => tx.Distance)
